@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+
+    id("io.realm.kotlin")
 }
 
 kotlin {
@@ -40,12 +42,38 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
+
+
+//            implementation(libs.androidx.adaptive)
+//            implementation(libs.androidx.adaptive.layout)
+//            implementation(libs.androidx.adaptive.navigation)
+
+            implementation(libs.material3.adaptive.navigation.suite)
+
+            implementation(libs.lifecycle.viewmodel.compose)
+
+            implementation(libs.library.base)
+            implementation(libs.kotlinx.coroutines.core)
+
+            implementation(libs.navigation.compose)
+
+
+            implementation(compose.components.resources)
+
+            implementation(libs.material.icons.extended)
+
+
+
+
+
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -82,6 +110,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.annotation.jvm)
     debugImplementation(compose.uiTooling)
 }
 

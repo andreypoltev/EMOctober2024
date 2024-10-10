@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EM October 2024</string>
+    <string name="search">Поиск</string>
+    <string name="favorites">Избранное</string>
+    <string name="applications">Отклики</string>
+    <string name="messages">Сообщения</string>
+    <string name="profile">Профиль</string>
+</resources>
