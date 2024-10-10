@@ -10,4 +10,7 @@ plugins {
 
     id("io.realm.kotlin") version "2.3.0" apply false
 
+    kotlin("plugin.serialization") version "2.0.20" apply false
+
+
 }

@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.compose.compiler)
 
     id("io.realm.kotlin")
+
+    kotlin("plugin.serialization")
 }
 
 kotlin {
@@ -50,10 +52,11 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
 
 
+            // adaptive
+            implementation(libs.adaptive)
+            implementation(libs.adaptive.layout)
+            implementation(libs.adaptive.navigation)
 
-//            implementation(libs.androidx.adaptive)
-//            implementation(libs.androidx.adaptive.layout)
-//            implementation(libs.androidx.adaptive.navigation)
 
             implementation(libs.material3.adaptive.navigation.suite)
 
@@ -68,6 +71,18 @@ kotlin {
             implementation(compose.components.resources)
 
             implementation(libs.material.icons.extended)
+
+            implementation(libs.kotlinx.serialization.json)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+
+
+
+
+
 
 
 
