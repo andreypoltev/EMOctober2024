@@ -34,19 +34,11 @@ fun App(
         ) {
             Scaffold(modifier = Modifier.fillMaxSize()) {
 
-
-                Scaffold(
-
-                    modifier = Modifier.fillMaxSize().statusBarsPadding()
-                ) {
+                Scaffold(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
                     AppContent()
                 }
-
             }
-
         }
-
-
     }
 }
 

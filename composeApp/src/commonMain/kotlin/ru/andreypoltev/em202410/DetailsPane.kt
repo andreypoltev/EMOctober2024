@@ -1,4 +1,4 @@
-package ru.andreypoltev
+package ru.andreypoltev.em202410
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

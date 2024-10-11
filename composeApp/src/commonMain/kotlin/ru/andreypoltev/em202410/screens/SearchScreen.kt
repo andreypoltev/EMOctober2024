@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import ru.andreypoltev.DetailsPane
+import ru.andreypoltev.em202410.DetailsPane
 import ru.andreypoltev.em202410.ListPane
 import ru.andreypoltev.em202410.MainViewModel
 import ru.andreypoltev.em202410.model.Vacancy
