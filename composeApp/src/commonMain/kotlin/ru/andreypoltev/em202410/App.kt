@@ -61,7 +61,7 @@ fun AppContent() {
                     selected = it == currentDestination,
                     onClick = { currentDestination = it })
             }
-        }
+        }, modifier = Modifier.fillMaxSize()
 
     ) {
 

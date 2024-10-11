@@ -8,7 +8,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.util.InternalAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,13 +32,12 @@ class MainViewModel : ViewModel() {
     }
 
 
-    @OptIn(InternalAPI::class)
     suspend fun getApiResponse(): APIResponse {
 
         println("getApiResponse()")
 
         try {
-            val client = HttpClient() {
+            val client = HttpClient {
                 install(ContentNegotiation) {
                     json(Json {
                         ignoreUnknownKeys = true
