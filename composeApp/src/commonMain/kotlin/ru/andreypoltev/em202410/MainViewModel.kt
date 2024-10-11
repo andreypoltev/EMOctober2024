@@ -38,34 +38,24 @@ class MainViewModel : ViewModel() {
 
         println("getApiResponse()")
 
-        val client = HttpClient() {
-            install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                })
+        try {
+            val client = HttpClient() {
+                install(ContentNegotiation) {
+                    json(Json {
+                        ignoreUnknownKeys = true
+                    })
+                }
             }
+
+            val response = client.get(Constants.API_LINK).bodyAsText()
+            client.close()
+            val z = Json.decodeFromString<APIResponse>(response)
+
+            return z
+
+        } catch (e: Exception) {
+            println(e.message)
+            return APIResponse()
         }
-
-        val response = client.get(Constants.API_LINK).bodyAsText()
-
-        val z = Json.decodeFromString<APIResponse>(response)
-
-
-        client.close()
-
-        println("Response status: ${response}")
-        println("Response content: ${response.toString()}")
-
-        return z
-
-
-//        val response = client.get(Constants.API_LINK)
-//
-//        client.close()
-//        println(response.content.toString())
-
-//        return response.body<APIResponse>()
-
     }
-
 }
