@@ -19,18 +19,20 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
@@ -41,11 +43,21 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import emoctober2024.composeapp.generated.resources.Res
+import emoctober2024.composeapp.generated.resources.filter
+import org.jetbrains.compose.resources.vectorResource
 import ru.andreypoltev.em202410.model.APIResponse
 import ru.andreypoltev.em202410.model.Offer
 import ru.andreypoltev.em202410.model.Vacancy
+import ru.andreypoltev.em202410.theme.Green
+import ru.andreypoltev.em202410.theme.Grey1
+import ru.andreypoltev.em202410.theme.Grey2
+import ru.andreypoltev.em202410.theme.Grey3
+import ru.andreypoltev.em202410.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,83 +65,122 @@ fun ListPane(apiResponse: APIResponse, onItemClicked: (Any?) -> Unit) {
 
     Scaffold(topBar = {
 
+//        CustomSearchBarOld()
+
         CustomSearchBar()
 
 
     }) {
 
 
-        Column(modifier = Modifier.fillMaxSize().padding(it).padding(top = 16.dp)) {
-
-            if (apiResponse.offers.isNotEmpty()) {
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-
-                    items(apiResponse.offers) {
-
-                        OfferCard(it)
-
-                    }
-//
-                    item {
-
-                        Spacer(Modifier.size(8.dp))
-                    }
-
-
-                }
-                Spacer(Modifier.size(16.dp))
+        if (apiResponse.vacancies.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth().padding(it).padding(top = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
 
-
-
-            if (apiResponse.vacancies.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-
+                item {
                     if (apiResponse.offers.isNotEmpty()) {
-                        items(apiResponse.offers) {
+
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+
+                            items(apiResponse.offers) {
+
+                                OfferCard(it)
+
+                            }
+//
+                            item {
+
+                                Spacer(Modifier.size(8.dp))
+                            }
+
 
                         }
                     }
+                }
 
 
-                    items(apiResponse.vacancies) {
-                        Card(onClick = { onItemClicked(it) }) {
-
-                            VacancyCard(it)
 
 
-//                        Text(it.title)
-                        }
+                items(apiResponse.vacancies) { vacancy ->
+
+                    VacancyCard(vacancy) {
+                        onItemClicked(vacancy)
                     }
-
-                    item {
-                        Spacer(Modifier.size(0.dp))
-                    }
-
 
                 }
+
+                item {
+                    Spacer(Modifier.size(0.dp))
+                }
+
+
             }
-
-
         }
+
 
     }
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomSearchBar() {
+
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Card(
+            modifier = Modifier.weight(1f).height(40.dp),
+            colors = CardDefaults.cardColors(containerColor = Grey2)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, "", modifier = Modifier.size(24.dp))
+
+
+                Text(
+                    "Должность по подходящим вакансиям",
+                    color = Grey3,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+
+        }
+
+        Spacer(Modifier.size(8.dp))
+
+        Card(modifier = Modifier.size(40.dp),
+            colors = CardDefaults.cardColors(containerColor = Grey2),
+            onClick = {}) {
+
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Icon(vectorResource(Res.drawable.filter), null, modifier = Modifier.size(24.dp))
+            }
+
+        }
+
+    }
+
+
+//    TODO("Not yet implemented")
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomSearchBarOld() {
 
     Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
 
@@ -148,21 +199,16 @@ fun CustomSearchBar() {
                 placeholder = { Text("Hinted search text") },
                 leadingIcon = {
                     Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null
+                        Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null
                     )
                 },
 //            trailingIcon = { Icon(Icons.Default.MoreVert, contentDescription = null) },
             )
-        },
-            expanded = expanded,
-            onExpandedChange = {
+        }, expanded = expanded, onExpandedChange = {
 
 //            expanded = it
 
-            },
-            shape = RoundedCornerShape(12.dp),
-            content = {})
+        }, shape = RoundedCornerShape(12.dp), content = {})
 
         Spacer(Modifier.size(16.dp))
 
@@ -178,9 +224,11 @@ fun CustomSearchBar() {
 @Composable
 fun OfferCard(offer: Offer) {
 
-    Card(modifier = Modifier.size(width = 132.dp, height = 120.dp), onClick = {
-        offer.link
-    }) {
+    Card(modifier = Modifier.size(width = 132.dp, height = 120.dp),
+        colors = CardDefaults.cardColors(containerColor = Grey1),
+        onClick = {
+            offer.link
+        }) {
 
         Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
 
@@ -204,8 +252,12 @@ fun OfferCard(offer: Offer) {
 }
 
 @Composable
-fun VacancyCard(vacancy: Vacancy) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+fun VacancyCard(vacancy: Vacancy, onItemClicked: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        onClick = onItemClicked,
+        colors = CardDefaults.cardColors(containerColor = Grey1)
+    ) {
 
         Box(modifier = Modifier.fillMaxWidth()) {
 
@@ -213,13 +265,14 @@ fun VacancyCard(vacancy: Vacancy) {
 
                 Column {
 
-                    Text("Сейчас просматривает ${vacancy.lookingNumber} человек")
+                    Text("Сейчас просматривает ${vacancy.lookingNumber} человек", color = MaterialTheme.colorScheme.primary)
                     Text(vacancy.title)
                     Text(vacancy.address.town)
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
 
                         Text(vacancy.company)
+                        Spacer(Modifier.size(8.dp))
                         Icon(Icons.Default.Check, "", modifier = Modifier.size(16.dp))
 
                     }
@@ -227,13 +280,20 @@ fun VacancyCard(vacancy: Vacancy) {
                         Icon(Icons.Default.ShoppingBag, "", modifier = Modifier.size(16.dp))
                         Text(vacancy.experience.previewText)
                     }
-                    Text("Опубликовано ${vacancy.publishedDate}")
+                    Text("Опубликовано ${vacancy.publishedDate}", color = Grey3)
                 }
 
 
-                Button(onClick = {
+                Button(
+                    onClick = {
 
-                }, modifier = Modifier.fillMaxWidth()) {
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(32.dp),
+//                    colors = ButtonDefaults.buttonColors(
+//                        containerColor = Green, contentColor = White
+//                    )
+                ) {
                     Text("Oткликнуться")
                 }
             }

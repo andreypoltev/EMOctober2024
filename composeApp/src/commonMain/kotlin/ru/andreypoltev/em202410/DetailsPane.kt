@@ -14,35 +14,49 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ru.andreypoltev.em202410.model.Vacancy
+import ru.andreypoltev.em202410.theme.Green
+import ru.andreypoltev.em202410.theme.Grey0
+import ru.andreypoltev.em202410.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsPane(vacancy: Vacancy, onNavigateBackClicked: () -> Unit) {
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-        TopAppBar(title = {}, navigationIcon = {
+        Icon(Icons.Default.Favorite, null)
+        TopAppBar(
+            title = {},
+            navigationIcon = {
 
-            IconButton(onClick = onNavigateBackClicked) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, "Go Back")
-            }
+                IconButton(onClick = onNavigateBackClicked) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "Go Back")
+                }
 
-        }, actions = {
-            IconButton(onClick = {}) {
-                Icon(Icons.Default.CheckBox, "Go Back")
-            }
+            },
+            actions = {
+                IconButton(onClick = {}) {
+                    Icon(Icons.Default.CheckBox, "Go Back")
+                }
 
-            IconButton(onClick = {}) {
-                Icon(Icons.Default.Share, "Go Back")
-            }
+                IconButton(onClick = {}) {
+                    Icon(Icons.Default.Share, "Go Back")
+                }
 
-            IconButton(onClick = {}) {
-                Icon(Icons.Default.Favorite, "Go Back")
-            }
-        })
-    }) {
+                IconButton(onClick = {}) {
+                    Icon(Icons.Default.Favorite, "Go Back")
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                navigationIconContentColor = White,
+                actionIconContentColor = White
+            )
+        )
+    }, containerColor = Grey0) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
             Text(vacancy.title)
