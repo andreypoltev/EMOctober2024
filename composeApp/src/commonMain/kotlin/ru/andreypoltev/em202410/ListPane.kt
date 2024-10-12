@@ -1,5 +1,6 @@
 package ru.andreypoltev.em202410
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +14,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingBag
+import androidx.compose.material.icons.filled.SocialDistance
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -39,16 +43,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import emoctober2024.composeapp.generated.resources.Res
+import emoctober2024.composeapp.generated.resources.distance
 import emoctober2024.composeapp.generated.resources.favorites
 import emoctober2024.composeapp.generated.resources.filter
+import emoctober2024.composeapp.generated.resources.level_up
 import emoctober2024.composeapp.generated.resources.search
+import emoctober2024.composeapp.generated.resources.temp_job
 import org.jetbrains.compose.resources.vectorResource
 import ru.andreypoltev.em202410.model.APIResponse
 import ru.andreypoltev.em202410.model.Offer
 import ru.andreypoltev.em202410.model.Vacancy
+import ru.andreypoltev.em202410.theme.Blue
+import ru.andreypoltev.em202410.theme.DarkBlue
+import ru.andreypoltev.em202410.theme.DarkGreen
+import ru.andreypoltev.em202410.theme.Green
 import ru.andreypoltev.em202410.theme.Grey1
 import ru.andreypoltev.em202410.theme.Grey2
 import ru.andreypoltev.em202410.theme.Grey3
@@ -87,9 +99,9 @@ fun ListPane(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
 
-                            items(apiResponse.offers) {
+                            items(apiResponse.offers) { item ->
 
-                                OfferCard(it)
+                                OfferCard(item)
 
                             }
 //
@@ -244,11 +256,83 @@ fun OfferCard(offer: Offer) {
         Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
 
             if (offer.id.isNotEmpty()) {
-                Icon(Icons.Default.Star, "", modifier = Modifier.size(32.dp))
+
+
+                val icon = when (offer.id) {
+
+                    "near_vacancies" -> {
+                        vectorResource(Res.drawable.distance)
+                    }
+
+                    "level_up_resume" -> {
+                        vectorResource(Res.drawable.level_up)
+                    }
+
+                    "temporary_job" -> {
+                        vectorResource(Res.drawable.temp_job)
+                    }
+
+                    else -> {
+
+                        Icons.Default.Error
+
+                    }
+                }
+
+                val iconColor = when (offer.id) {
+
+                    "near_vacancies" -> {
+                        Blue
+                    }
+
+                    "level_up_resume" -> {
+                        Green
+                    }
+
+                    "temporary_job" -> {
+                        Green
+                    }
+
+                    else -> {
+                        Green
+
+
+                    }
+
+                }
+
+                val backgroundColor = when (offer.id) {
+
+                    "near_vacancies" -> {
+                        DarkBlue
+                    }
+
+                    "level_up_resume" -> {
+                        DarkGreen
+                    }
+
+                    "temporary_job" -> {
+                        DarkGreen
+                    }
+
+                    else -> {
+                        DarkGreen
+
+
+                    }
+
+                }
+
+                Box(modifier = Modifier.size(32.dp).clip(CircleShape).background(backgroundColor), contentAlignment = Alignment.Center) {
+                    Icon(icon, null, tint = iconColor)
+                }
+
                 Spacer(Modifier.size(16.dp))
             }
 
-            Text(offer.title)
+
+
+            Text(text = offer.title, maxLines = if (true) 2 else 3)
 
             if (offer.button.text.isNotEmpty()) {
                 Text(offer.button.text)
