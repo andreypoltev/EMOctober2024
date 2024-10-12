@@ -20,7 +20,7 @@ enum class AppDestinations(
     val icon: DrawableResource,
 //    val contentDescription: StringResource
 ) {
-    SEARCH(Res.string.search, Res.drawable.filter),
+    SEARCH(Res.string.search, Res.drawable.search),
     FAVORITES(Res.string.favorites, Res.drawable.favorites),
     APPLICATIONS(Res.string.applications, Res.drawable.applications),
     MESSAGES(Res.string.messages, Res.drawable.messages),

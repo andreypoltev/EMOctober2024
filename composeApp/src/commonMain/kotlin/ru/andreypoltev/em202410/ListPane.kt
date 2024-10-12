@@ -16,15 +16,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -43,33 +39,33 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import emoctober2024.composeapp.generated.resources.Res
+import emoctober2024.composeapp.generated.resources.favorites
 import emoctober2024.composeapp.generated.resources.filter
+import emoctober2024.composeapp.generated.resources.search
 import org.jetbrains.compose.resources.vectorResource
 import ru.andreypoltev.em202410.model.APIResponse
 import ru.andreypoltev.em202410.model.Offer
 import ru.andreypoltev.em202410.model.Vacancy
-import ru.andreypoltev.em202410.theme.Green
 import ru.andreypoltev.em202410.theme.Grey1
 import ru.andreypoltev.em202410.theme.Grey2
 import ru.andreypoltev.em202410.theme.Grey3
-import ru.andreypoltev.em202410.theme.White
+import ru.andreypoltev.em202410.theme.Grey4
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListPane(apiResponse: APIResponse, onItemClicked: (Any?) -> Unit) {
+fun ListPane(
+    apiResponse: APIResponse,
+    onItemClicked: (Any?) -> Unit,
+    viewModel: MainViewModel,
+    onToggleFavoriteClicked: (id: String) -> Unit
+) {
 
     Scaffold(topBar = {
 
-//        CustomSearchBarOld()
-
         CustomSearchBar()
-
-
     }) {
 
 
@@ -112,9 +108,14 @@ fun ListPane(apiResponse: APIResponse, onItemClicked: (Any?) -> Unit) {
 
                 items(apiResponse.vacancies) { vacancy ->
 
-                    VacancyCard(vacancy) {
+                    {
                         onItemClicked(vacancy)
+                        viewModel.toggleFavorite(vacancy.id)
                     }
+
+                    VacancyCard(vacancy = vacancy,
+                        onItemClicked = { onItemClicked(vacancy) },
+                        onToggleFavoriteClicked = { onToggleFavoriteClicked(vacancy.id) })
 
                 }
 
@@ -134,20 +135,30 @@ fun ListPane(apiResponse: APIResponse, onItemClicked: (Any?) -> Unit) {
 @Composable
 fun CustomSearchBar() {
 
+    val height = 48.dp
+
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         Card(
-            modifier = Modifier.weight(1f).height(40.dp),
+            modifier = Modifier.weight(1f).height(height),
             colors = CardDefaults.cardColors(containerColor = Grey2)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier.fillMaxSize().padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, "", modifier = Modifier.size(24.dp))
+
+                Icon(
+                    vectorResource(Res.drawable.search),
+                    "",
+                    modifier = Modifier.size(24.dp),
+                    tint = Grey4
+                )
+
+                Spacer(Modifier.size(12.dp))
 
 
                 Text(
@@ -162,7 +173,7 @@ fun CustomSearchBar() {
 
         Spacer(Modifier.size(8.dp))
 
-        Card(modifier = Modifier.size(40.dp),
+        Card(modifier = Modifier.size(height),
             colors = CardDefaults.cardColors(containerColor = Grey2),
             onClick = {}) {
 
@@ -252,7 +263,7 @@ fun OfferCard(offer: Offer) {
 }
 
 @Composable
-fun VacancyCard(vacancy: Vacancy, onItemClicked: () -> Unit) {
+fun VacancyCard(vacancy: Vacancy, onItemClicked: () -> Unit, onToggleFavoriteClicked: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         onClick = onItemClicked,
@@ -265,7 +276,10 @@ fun VacancyCard(vacancy: Vacancy, onItemClicked: () -> Unit) {
 
                 Column {
 
-                    Text("Сейчас просматривает ${vacancy.lookingNumber} человек", color = MaterialTheme.colorScheme.primary)
+                    Text(
+                        "Сейчас просматривает ${vacancy.lookingNumber} человек",
+                        color = MaterialTheme.colorScheme.primary
+                    )
                     Text(vacancy.title)
                     Text(vacancy.address.town)
 
@@ -298,10 +312,11 @@ fun VacancyCard(vacancy: Vacancy, onItemClicked: () -> Unit) {
                 }
             }
 
-            IconButton(onClick = {
-
-            }, modifier = Modifier.align(Alignment.TopEnd).padding(top = 4.dp, end = 4.dp)) {
-                Icon(Icons.Default.Favorite, "")
+            IconButton(
+                onClick = onToggleFavoriteClicked,
+                modifier = Modifier.align(Alignment.TopEnd).padding(top = 4.dp, end = 4.dp)
+            ) {
+                Icon(vectorResource(Res.drawable.favorites), "")
             }
 
         }
