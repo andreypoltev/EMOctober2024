@@ -9,6 +9,7 @@ import emoctober2024.composeapp.generated.resources.Res
 import emoctober2024.composeapp.generated.resources.applications
 import emoctober2024.composeapp.generated.resources.favorites
 import emoctober2024.composeapp.generated.resources.filter
+import emoctober2024.composeapp.generated.resources.heart_outlined
 import emoctober2024.composeapp.generated.resources.messages
 import emoctober2024.composeapp.generated.resources.profile
 import emoctober2024.composeapp.generated.resources.search
@@ -21,7 +22,7 @@ enum class AppDestinations(
 //    val contentDescription: StringResource
 ) {
     SEARCH(Res.string.search, Res.drawable.search),
-    FAVORITES(Res.string.favorites, Res.drawable.favorites),
+    FAVORITES(Res.string.favorites, Res.drawable.heart_outlined),
     APPLICATIONS(Res.string.applications, Res.drawable.applications),
     MESSAGES(Res.string.messages, Res.drawable.messages),
     PROFILE(Res.string.profile, Res.drawable.profile),

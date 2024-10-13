@@ -18,12 +18,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingBag
-import androidx.compose.material.icons.filled.SocialDistance
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -37,8 +34,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,10 +45,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import emoctober2024.composeapp.generated.resources.Res
+import emoctober2024.composeapp.generated.resources.checked
 import emoctober2024.composeapp.generated.resources.distance
 import emoctober2024.composeapp.generated.resources.favorites
 import emoctober2024.composeapp.generated.resources.filter
+import emoctober2024.composeapp.generated.resources.heart_filled
+import emoctober2024.composeapp.generated.resources.heart_outlined
 import emoctober2024.composeapp.generated.resources.level_up
 import emoctober2024.composeapp.generated.resources.search
 import emoctober2024.composeapp.generated.resources.temp_job
@@ -125,7 +128,8 @@ fun ListPane(
                         viewModel.toggleFavorite(vacancy.id)
                     }
 
-                    VacancyCard(vacancy = vacancy,
+                    VacancyCard(viewModel = viewModel,
+                        vacancy = vacancy,
                         onItemClicked = { onItemClicked(vacancy) },
                         onToggleFavoriteClicked = { onToggleFavoriteClicked(vacancy.id) })
 
@@ -323,7 +327,10 @@ fun OfferCard(offer: Offer) {
 
                 }
 
-                Box(modifier = Modifier.size(32.dp).clip(CircleShape).background(backgroundColor), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier.size(32.dp).clip(CircleShape).background(backgroundColor),
+                    contentAlignment = Alignment.Center
+                ) {
                     Icon(icon, null, tint = iconColor)
                 }
 
@@ -332,7 +339,7 @@ fun OfferCard(offer: Offer) {
 
 
 
-            Text(text = offer.title, maxLines = if (true) 2 else 3)
+            Text(text = offer.title, maxLines = if (true) 2 else 3, fontSize = 14.sp, lineHeight = 14.sp)
 
             if (offer.button.text.isNotEmpty()) {
                 Text(offer.button.text)
@@ -347,7 +354,12 @@ fun OfferCard(offer: Offer) {
 }
 
 @Composable
-fun VacancyCard(vacancy: Vacancy, onItemClicked: () -> Unit, onToggleFavoriteClicked: () -> Unit) {
+fun VacancyCard(
+    vacancy: Vacancy,
+    onItemClicked: () -> Unit,
+    onToggleFavoriteClicked: () -> Unit,
+    viewModel: MainViewModel
+) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         onClick = onItemClicked,
@@ -361,25 +373,43 @@ fun VacancyCard(vacancy: Vacancy, onItemClicked: () -> Unit, onToggleFavoriteCli
                 Column {
 
                     Text(
-                        "Сейчас просматривает ${vacancy.lookingNumber} человек",
+                        text = "Сейчас просматривает ${vacancy.lookingNumber} человек",
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    Text(vacancy.title)
+                    Spacer(Modifier.size(12.dp))
+
+                    Text(vacancy.title, style = MaterialTheme.typography.titleSmall)
+                    Spacer(Modifier.size(8.dp))
                     Text(vacancy.address.town)
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
 
                         Text(vacancy.company)
                         Spacer(Modifier.size(8.dp))
-                        Icon(Icons.Default.Check, "", modifier = Modifier.size(16.dp))
+                        Icon(
+                            vectorResource(Res.drawable.checked),
+                            null,
+                            modifier = Modifier.size(16.dp),
+                            tint = Grey3
+                        )
 
                     }
+                    Spacer(Modifier.size(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.ShoppingBag, "", modifier = Modifier.size(16.dp))
                         Text(vacancy.experience.previewText)
                     }
-                    Text("Опубликовано ${vacancy.publishedDate}", color = Grey3)
+
+                    Spacer(Modifier.size(8.dp))
+                    Text(
+                        "Опубликовано ${vacancy.publishedDate}",
+                        color = Grey3,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
+
+                Spacer(Modifier.size(20.dp))
 
 
                 Button(
@@ -396,15 +426,52 @@ fun VacancyCard(vacancy: Vacancy, onItemClicked: () -> Unit, onToggleFavoriteCli
                 }
             }
 
+//            FavoriteIcon(viewModel, onToggleFavoriteClicked, vacancy.id)
+
+            val favs by viewModel.favsIds.collectAsState(emptySet())
+
+            val inFavorites = vacancy.id in favs
+
             IconButton(
                 onClick = onToggleFavoriteClicked,
                 modifier = Modifier.align(Alignment.TopEnd).padding(top = 4.dp, end = 4.dp)
             ) {
-                Icon(vectorResource(Res.drawable.favorites), "")
+
+                if (inFavorites) {
+                    Icon(
+                        vectorResource(Res.drawable.heart_filled),
+                        "", tint = Blue
+                    )
+                } else {
+                    Icon(
+                        vectorResource(Res.drawable.heart_outlined),
+                        ""
+                    )
+                }
+
+
             }
+
 
         }
 
+    }
+}
+
+@Composable
+fun FavoriteIcon(viewModel: MainViewModel, onToggleFavoriteClicked: () -> Unit, id: String) {
+
+    val favs by viewModel.favsIds.collectAsState(emptySet())
+
+    val inFavorites = id in favs
+
+    IconButton(
+        onClick = onToggleFavoriteClicked, modifier = Modifier.padding(top = 4.dp, end = 4.dp)
+    ) {
+        Icon(
+            vectorResource(if (inFavorites) Res.drawable.heart_filled else Res.drawable.heart_outlined),
+            ""
+        )
     }
 }
 

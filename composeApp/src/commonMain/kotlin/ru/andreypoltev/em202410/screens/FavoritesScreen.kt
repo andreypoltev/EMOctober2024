@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import emoctober2024.composeapp.generated.resources.Res
@@ -22,6 +22,7 @@ import emoctober2024.composeapp.generated.resources.favorites
 import org.jetbrains.compose.resources.stringResource
 import ru.andreypoltev.em202410.MainViewModel
 import ru.andreypoltev.em202410.VacancyCard
+import ru.andreypoltev.em202410.theme.Grey3
 
 @Composable
 fun FavoritesScreen(viewModel: MainViewModel) {
@@ -32,11 +33,16 @@ fun FavoritesScreen(viewModel: MainViewModel) {
 
         Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
 
-            Spacer(modifier = Modifier.size(32.dp))
+            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                Spacer(modifier = Modifier.size(32.dp))
 
-            Text(stringResource(Res.string.favorites))
+                Text(
+                    text = stringResource(Res.string.favorites),
+                    style = MaterialTheme.typography.titleLarge
+                )
 
-            Spacer(Modifier.size(24.dp))
+                Spacer(Modifier.size(24.dp))
+            }
 
 
 
@@ -47,7 +53,12 @@ fun FavoritesScreen(viewModel: MainViewModel) {
 
             } else {
 
-                Text("${vacancies.size} вакансия")
+                Text(
+                    text = "${vacancies.size} вакансия",
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Grey3
+                )
 
                 Spacer(modifier = Modifier.size(16.dp))
 
@@ -55,9 +66,14 @@ fun FavoritesScreen(viewModel: MainViewModel) {
 
                     items(vacancies) { vacancy ->
 
-                        VacancyCard(vacancy, {
+                        VacancyCard(
+                            vacancy,
+                            {
 
-                        }, onToggleFavoriteClicked = { viewModel.toggleFavorite(vacancy.id) })
+                            },
+                            onToggleFavoriteClicked = { viewModel.toggleFavorite(vacancy.id) },
+                            viewModel
+                        )
                     }
                 }
 

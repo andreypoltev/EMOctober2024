@@ -77,6 +77,6 @@ fun Theme(
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     MaterialTheme(
-        colorScheme = colorScheme, content = content
+        colorScheme = colorScheme, typography = Typography, content = content
     )
 }

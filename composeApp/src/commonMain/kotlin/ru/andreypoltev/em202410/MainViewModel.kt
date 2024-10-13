@@ -41,13 +41,16 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private val _favs = MutableStateFlow(realmSetOf(Favorite()))
-    val favs = _favs.asStateFlow()
 
 
     private val favorites by lazy {
         initializeRealm()
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val favsIds = favorites.query<Favorite>().asFlow().mapLatest { favorites ->
+        favorites.list.map { it.id }.toSet()
+    }.flowOn(Dispatchers.IO)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val filteredVacancies = favorites.query<Favorite>().asFlow().mapLatest { favorites ->
@@ -87,6 +90,9 @@ class MainViewModel : ViewModel() {
                 }
             }
         }
+
+
+
 
 
     }
