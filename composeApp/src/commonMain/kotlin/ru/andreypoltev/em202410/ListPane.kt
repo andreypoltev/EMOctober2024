@@ -43,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -251,10 +252,12 @@ fun CustomSearchBarOld() {
 @Composable
 fun OfferCard(offer: Offer) {
 
+    val uriHandler = LocalUriHandler.current
+
     Card(modifier = Modifier.size(width = 132.dp, height = 120.dp),
         colors = CardDefaults.cardColors(containerColor = Grey1),
         onClick = {
-            offer.link
+            uriHandler.openUri(offer.link)
         }) {
 
         Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
@@ -339,7 +342,12 @@ fun OfferCard(offer: Offer) {
 
 
 
-            Text(text = offer.title, maxLines = if (true) 2 else 3, fontSize = 14.sp, lineHeight = 14.sp)
+            Text(
+                text = offer.title,
+                maxLines = if (true) 2 else 3,
+                fontSize = 14.sp,
+                lineHeight = 14.sp
+            )
 
             if (offer.button.text.isNotEmpty()) {
                 Text(offer.button.text)
@@ -439,13 +447,11 @@ fun VacancyCard(
 
                 if (inFavorites) {
                     Icon(
-                        vectorResource(Res.drawable.heart_filled),
-                        "", tint = Blue
+                        vectorResource(Res.drawable.heart_filled), "", tint = Blue
                     )
                 } else {
                     Icon(
-                        vectorResource(Res.drawable.heart_outlined),
-                        ""
+                        vectorResource(Res.drawable.heart_outlined), ""
                     )
                 }
 
