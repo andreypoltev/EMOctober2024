@@ -27,17 +27,21 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -57,6 +61,7 @@ import emoctober2024.composeapp.generated.resources.heart_outlined
 import emoctober2024.composeapp.generated.resources.level_up
 import emoctober2024.composeapp.generated.resources.search
 import emoctober2024.composeapp.generated.resources.temp_job
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.vectorResource
 import ru.andreypoltev.em202410.model.APIResponse
 import ru.andreypoltev.em202410.model.Offer
@@ -206,49 +211,6 @@ fun CustomSearchBar() {
 //    TODO("Not yet implemented")
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CustomSearchBarOld() {
-
-    Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-
-        var expanded by rememberSaveable { mutableStateOf(false) }
-
-        var text by rememberSaveable { mutableStateOf("") }
-
-        DockedSearchBar(inputField = {
-            SearchBarDefaults.InputField(
-                query = text,
-                onQueryChange = { text = it },
-                onSearch = { expanded = false },
-                expanded = expanded,
-                onExpandedChange = { expanded = it },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Hinted search text") },
-                leadingIcon = {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null
-                    )
-                },
-//            trailingIcon = { Icon(Icons.Default.MoreVert, contentDescription = null) },
-            )
-        }, expanded = expanded, onExpandedChange = {
-
-//            expanded = it
-
-        }, shape = RoundedCornerShape(12.dp), content = {})
-
-        Spacer(Modifier.size(16.dp))
-
-        Column {
-
-            Icon(Icons.Default.Settings, "", modifier = Modifier.size(60.dp))
-        }
-
-    }
-
-}
-
 @Composable
 fun OfferCard(offer: Offer) {
 
@@ -361,6 +323,7 @@ fun OfferCard(offer: Offer) {
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VacancyCard(
     vacancy: Vacancy,
@@ -368,6 +331,61 @@ fun VacancyCard(
     onToggleFavoriteClicked: () -> Unit,
     viewModel: MainViewModel
 ) {
+
+    val sheetState = rememberModalBottomSheetState()
+
+    val scope = rememberCoroutineScope()
+
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = {
+                showBottomSheet = false
+            }
+
+        ) {
+
+            Column(modifier = Modifier.padding(16.dp)) {
+
+
+                Row(modifier = Modifier.fillMaxWidth()) {
+
+                    Icon(vectorResource(Res.drawable.search), null)
+
+                    Column {
+                        Text("Резюме для отклика")
+                        Text("UI/UX дизайнер")
+                    }
+
+
+                }
+                Spacer(Modifier.size(24.dp))
+                HorizontalDivider()
+                Spacer(Modifier.size(40.dp))
+
+                Text("Добавить сопроводительное")
+
+
+                // Sheet content
+                Button(onClick = {
+
+                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            showBottomSheet = false
+                        }
+                    }
+                }) {
+                    Text("Откликнуться")
+                }
+            }
+
+
+        }
+    }
+
+
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         onClick = onItemClicked,
@@ -423,6 +441,9 @@ fun VacancyCard(
                 Button(
                     onClick = {
 
+                        showBottomSheet = true
+
+
                     },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(32.dp),
@@ -463,6 +484,7 @@ fun VacancyCard(
 
     }
 }
+
 
 @Composable
 fun FavoriteIcon(viewModel: MainViewModel, onToggleFavoriteClicked: () -> Unit, id: String) {
