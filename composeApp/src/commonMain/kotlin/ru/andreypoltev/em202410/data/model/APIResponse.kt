@@ -1,4 +1,4 @@
-package ru.andreypoltev.em202410.model
+package ru.andreypoltev.em202410.data.model
 
 
 import kotlinx.serialization.SerialName

@@ -3,12 +3,9 @@ package ru.andreypoltev.em202410
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Badge
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -27,16 +24,23 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import ru.andreypoltev.em202410.navigation.AppDestinations
-import ru.andreypoltev.em202410.screens.ApplicationsScreen
-import ru.andreypoltev.em202410.screens.FavoritesScreen
-import ru.andreypoltev.em202410.screens.MessagesScreen
-import ru.andreypoltev.em202410.screens.ProfileScreen
+import ru.andreypoltev.em202410.data.APIRepositoryImpl
+import ru.andreypoltev.em202410.data.Favorite
+import ru.andreypoltev.em202410.data.FavoriteRepositoryImpl
+import ru.andreypoltev.em202410.domain.use_case.GetApiResponseUseCase
+import ru.andreypoltev.em202410.domain.use_case.GetFavoriteIdsUseCase
+import ru.andreypoltev.em202410.domain.use_case.GetFilteredPositionsUseCase
+import ru.andreypoltev.em202410.domain.use_case.ToggleFavoriteUseCase
+import ru.andreypoltev.em202410.domain.use_case.UserUseCases
+import ru.andreypoltev.em202410.presentation.navigation.AppDestinations
+import ru.andreypoltev.em202410.presentation.MainViewModel
+import ru.andreypoltev.em202410.presentation.screens.ApplicationsScreen
+import ru.andreypoltev.em202410.presentation.screens.FavoritesScreen
+import ru.andreypoltev.em202410.presentation.screens.MessagesScreen
+import ru.andreypoltev.em202410.presentation.screens.ProfileScreen
 
-import ru.andreypoltev.em202410.screens.SearchScreen
-import ru.andreypoltev.em202410.theme.Black
+import ru.andreypoltev.em202410.presentation.screens.SearchScreen
 import ru.andreypoltev.em202410.theme.Blue
-import ru.andreypoltev.em202410.theme.Green
 import ru.andreypoltev.em202410.theme.Grey4
 import ru.andreypoltev.em202410.theme.Red
 import ru.andreypoltev.em202410.theme.Theme
@@ -68,7 +72,14 @@ fun App(
 fun AppContent(
 
     viewModel: MainViewModel = viewModel {
-        MainViewModel()
+        MainViewModel(
+            useCases = UserUseCases(
+                getApiResponse = GetApiResponseUseCase(APIRepositoryImpl()),
+                toggleFavorite = ToggleFavoriteUseCase(FavoriteRepositoryImpl()),
+                getFilteredPositions = GetFilteredPositionsUseCase(FavoriteRepositoryImpl()),
+                getFavoriteIds = GetFavoriteIdsUseCase(FavoriteRepositoryImpl())
+            )
+        )
     }
 
 ) {
@@ -76,7 +87,9 @@ fun AppContent(
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.SEARCH) }
 
 
-    val favCount by viewModel.favsIds.collectAsState(emptySet())
+    val favCount by viewModel.numberOfFavorites.collectAsState(0)
+//    val favCount by viewModel.favsIds.collectAsState(emptySet())
+
 
     NavigationSuiteScaffold(
 
@@ -91,7 +104,7 @@ fun AppContent(
                             vectorResource(it.icon), contentDescription = null
                         )
 
-                        if (favCount.isNotEmpty() && it == AppDestinations.FAVORITES) {
+                        if (favCount != 0 && it == AppDestinations.FAVORITES) {
 
                             Box(
                                 contentAlignment = Alignment.Center,
@@ -100,7 +113,7 @@ fun AppContent(
                                 ).background(Red)
                             ) {
                                 Text(
-                                    text = favCount.size.toString(),
+                                    text = favCount.toString(),
                                     color = White,
                                     fontSize = 7.sp,
                                     lineHeight = 7.sp,
@@ -115,17 +128,14 @@ fun AppContent(
                     }
 
 
-                },
-                    label = {
-                        Text(
-                            text = stringResource(it.label),
-                            maxLines = 1,
-                            overflow = TextOverflow.Visible,
-                            color = if (currentDestination == it) Blue else Grey4
-                        )
-                    },
-                    selected = it == currentDestination,
-                    onClick = { currentDestination = it })
+                }, label = {
+                    Text(
+                        text = stringResource(it.label),
+                        maxLines = 1,
+                        overflow = TextOverflow.Visible,
+                        color = if (currentDestination == it) Blue else Grey4
+                    )
+                }, selected = it == currentDestination, onClick = { currentDestination = it })
             }
         }, modifier = Modifier.fillMaxSize()
 

@@ -1,4 +1,4 @@
-package ru.andreypoltev.em202410
+package ru.andreypoltev.em202410.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,15 +17,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -33,7 +30,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -42,7 +38,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,7 +49,6 @@ import androidx.compose.ui.unit.sp
 import emoctober2024.composeapp.generated.resources.Res
 import emoctober2024.composeapp.generated.resources.checked
 import emoctober2024.composeapp.generated.resources.distance
-import emoctober2024.composeapp.generated.resources.favorites
 import emoctober2024.composeapp.generated.resources.filter
 import emoctober2024.composeapp.generated.resources.heart_filled
 import emoctober2024.composeapp.generated.resources.heart_outlined
@@ -63,9 +57,9 @@ import emoctober2024.composeapp.generated.resources.search
 import emoctober2024.composeapp.generated.resources.temp_job
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.vectorResource
-import ru.andreypoltev.em202410.model.APIResponse
-import ru.andreypoltev.em202410.model.Offer
-import ru.andreypoltev.em202410.model.Vacancy
+import ru.andreypoltev.em202410.data.model.APIResponse
+import ru.andreypoltev.em202410.data.model.Offer
+import ru.andreypoltev.em202410.data.model.Vacancy
 import ru.andreypoltev.em202410.theme.Blue
 import ru.andreypoltev.em202410.theme.DarkBlue
 import ru.andreypoltev.em202410.theme.DarkGreen
@@ -457,9 +451,10 @@ fun VacancyCard(
 
 //            FavoriteIcon(viewModel, onToggleFavoriteClicked, vacancy.id)
 
-            val favs by viewModel.favsIds.collectAsState(emptySet())
+            val favs by viewModel.favsIds.collectAsState(initial = emptyList())
 
-            val inFavorites = vacancy.id in favs
+
+            val inFavorites = vacancy in favs
 
             IconButton(
                 onClick = onToggleFavoriteClicked,
@@ -486,20 +481,20 @@ fun VacancyCard(
 }
 
 
-@Composable
-fun FavoriteIcon(viewModel: MainViewModel, onToggleFavoriteClicked: () -> Unit, id: String) {
-
-    val favs by viewModel.favsIds.collectAsState(emptySet())
-
-    val inFavorites = id in favs
-
-    IconButton(
-        onClick = onToggleFavoriteClicked, modifier = Modifier.padding(top = 4.dp, end = 4.dp)
-    ) {
-        Icon(
-            vectorResource(if (inFavorites) Res.drawable.heart_filled else Res.drawable.heart_outlined),
-            ""
-        )
-    }
-}
+//@Composable
+//fun FavoriteIcon(viewModel: MainViewModel, onToggleFavoriteClicked: () -> Unit, id: String) {
+//
+//    val favs by viewModel.favsIds.collectAsState(emptySet())
+//
+//    val inFavorites = id in favs
+//
+//    IconButton(
+//        onClick = onToggleFavoriteClicked, modifier = Modifier.padding(top = 4.dp, end = 4.dp)
+//    ) {
+//        Icon(
+//            vectorResource(if (inFavorites) Res.drawable.heart_filled else Res.drawable.heart_outlined),
+//            ""
+//        )
+//    }
+//}
 

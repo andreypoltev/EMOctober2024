@@ -1,4 +1,4 @@
-package ru.andreypoltev.em202410.screens
+package ru.andreypoltev.em202410.presentation.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,14 +20,14 @@ import androidx.compose.ui.unit.dp
 import emoctober2024.composeapp.generated.resources.Res
 import emoctober2024.composeapp.generated.resources.favorites
 import org.jetbrains.compose.resources.stringResource
-import ru.andreypoltev.em202410.MainViewModel
-import ru.andreypoltev.em202410.VacancyCard
+import ru.andreypoltev.em202410.presentation.MainViewModel
+import ru.andreypoltev.em202410.presentation.VacancyCard
 import ru.andreypoltev.em202410.theme.Grey3
 
 @Composable
 fun FavoritesScreen(viewModel: MainViewModel) {
 
-    val vacancies by viewModel.filteredVacancies.collectAsState(emptyList())
+    val vacancies by viewModel.favsIds.collectAsState(emptyList())
 
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
 

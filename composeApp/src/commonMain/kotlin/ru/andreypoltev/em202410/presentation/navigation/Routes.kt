@@ -1,4 +1,4 @@
-package ru.andreypoltev.em202410.navigation
+package ru.andreypoltev.em202410.presentation.navigation
 
 object Routes {
 

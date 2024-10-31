@@ -1,4 +1,4 @@
-package ru.andreypoltev.em202410.screens
+package ru.andreypoltev.em202410.presentation.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -10,10 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import ru.andreypoltev.em202410.DetailsPane
-import ru.andreypoltev.em202410.ListPane
-import ru.andreypoltev.em202410.MainViewModel
-import ru.andreypoltev.em202410.model.Vacancy
+import ru.andreypoltev.em202410.presentation.DetailsPane
+import ru.andreypoltev.em202410.presentation.ListPane
+import ru.andreypoltev.em202410.presentation.MainViewModel
+import ru.andreypoltev.em202410.data.model.Vacancy
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable

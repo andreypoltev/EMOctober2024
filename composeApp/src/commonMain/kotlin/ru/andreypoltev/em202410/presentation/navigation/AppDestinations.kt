@@ -1,4 +1,4 @@
-package ru.andreypoltev.em202410.navigation
+package ru.andreypoltev.em202410.presentation.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message

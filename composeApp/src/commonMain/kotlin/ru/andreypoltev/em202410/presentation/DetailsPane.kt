@@ -1,4 +1,4 @@
-package ru.andreypoltev.em202410
+package ru.andreypoltev.em202410.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -27,20 +27,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import emoctober2024.composeapp.generated.resources.Res
 import emoctober2024.composeapp.generated.resources.checked
 import org.jetbrains.compose.resources.vectorResource
-import ru.andreypoltev.em202410.model.Vacancy
+import ru.andreypoltev.em202410.data.model.Vacancy
 import ru.andreypoltev.em202410.theme.DarkGreen
-import ru.andreypoltev.em202410.theme.Green
 import ru.andreypoltev.em202410.theme.Grey0
 import ru.andreypoltev.em202410.theme.Grey1
 import ru.andreypoltev.em202410.theme.Grey3
