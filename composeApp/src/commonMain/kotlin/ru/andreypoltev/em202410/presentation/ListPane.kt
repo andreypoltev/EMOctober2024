@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -38,11 +39,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,6 +57,7 @@ import emoctober2024.composeapp.generated.resources.heart_filled
 import emoctober2024.composeapp.generated.resources.heart_outlined
 import emoctober2024.composeapp.generated.resources.level_up
 import emoctober2024.composeapp.generated.resources.search
+import emoctober2024.composeapp.generated.resources.sort_icon
 import emoctober2024.composeapp.generated.resources.temp_job
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.vectorResource
@@ -78,9 +82,37 @@ fun ListPane(
     onToggleFavoriteClicked: (id: String) -> Unit
 ) {
 
+    var suitablePositions by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+
+    val positions = apiResponse.vacancies.take(3)
+
     Scaffold(topBar = {
 
         CustomSearchBar()
+    }, bottomBar = {
+        if (!suitablePositions && apiResponse.vacancies.isNotEmpty()) {
+            Button(
+                onClick = {
+                    suitablePositions = true
+                },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                content = {
+
+
+                    Text(
+                        text="Ещё ${(apiResponse.vacancies.size - 3).toString()} вакансии",
+                        modifier = Modifier.padding(vertical = 8.dp), style = MaterialTheme.typography.titleSmall
+                    )
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Blue),
+                shape = RoundedCornerShape(8.dp)
+            )
+        }
+
+
     }) {
 
 
@@ -94,8 +126,8 @@ fun ListPane(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-                item {
-                    if (apiResponse.offers.isNotEmpty()) {
+                if (apiResponse.offers.isNotEmpty() && !suitablePositions) {
+                    item {
 
                         LazyRow(
                             modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
@@ -120,8 +152,49 @@ fun ListPane(
 
 
 
+                if (apiResponse.vacancies.isNotEmpty()) {
 
-                items(apiResponse.vacancies) { vacancy ->
+                    if (suitablePositions) {
+                        item {
+                            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+
+                                Text("${apiResponse.vacancies.size.toString()} вакансий")
+                                Spacer(modifier = Modifier.weight(1f))
+                                Text(
+                                    "По соответствию",
+                                    color = Blue,
+                                    style = MaterialTheme.typography.bodyMedium,
+
+                                    )
+
+                                Icon(
+                                    vectorResource(Res.drawable.sort_icon),
+                                    "",
+                                    modifier = Modifier.size(24.dp),
+                                    tint = Blue
+                                )
+
+                            }
+                        }
+                    } else {
+
+                        item {
+                            Row(modifier = Modifier.padding(horizontal = 16.dp)) {
+
+                                Text(
+                                    text = "Вакансии для вас",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+
+
+                    }
+
+                }
+
+                items(if (suitablePositions) apiResponse.vacancies else positions) { vacancy ->
 
                     {
                         onItemClicked(vacancy)
@@ -202,7 +275,6 @@ fun CustomSearchBar() {
     }
 
 
-//    TODO("Not yet implemented")
 }
 
 @Composable
@@ -333,11 +405,9 @@ fun VacancyCard(
     var showBottomSheet by remember { mutableStateOf(false) }
 
     if (showBottomSheet) {
-        ModalBottomSheet(
-            sheetState = sheetState,
-            onDismissRequest = {
-                showBottomSheet = false
-            }
+        ModalBottomSheet(sheetState = sheetState, onDismissRequest = {
+            showBottomSheet = false
+        }
 
         ) {
 
