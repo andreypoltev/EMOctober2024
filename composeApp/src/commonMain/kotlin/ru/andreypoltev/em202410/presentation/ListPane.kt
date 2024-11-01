@@ -56,6 +56,7 @@ import emoctober2024.composeapp.generated.resources.filter
 import emoctober2024.composeapp.generated.resources.heart_filled
 import emoctober2024.composeapp.generated.resources.heart_outlined
 import emoctober2024.composeapp.generated.resources.level_up
+import emoctober2024.composeapp.generated.resources.map
 import emoctober2024.composeapp.generated.resources.search
 import emoctober2024.composeapp.generated.resources.sort_icon
 import emoctober2024.composeapp.generated.resources.temp_job
@@ -111,6 +112,27 @@ fun ListPane(
                 colors = ButtonDefaults.buttonColors(containerColor = Blue),
                 shape = RoundedCornerShape(8.dp)
             )
+        }
+
+
+    }, floatingActionButton = {
+
+        if (suitablePositions) {
+            Card(
+                shape = RoundedCornerShape(40.dp),
+                onClick = {},
+                colors = CardDefaults.cardColors(containerColor = Grey2)
+            ) {
+                Row(modifier = Modifier.padding(12.dp)) {
+                    Icon(
+                        vectorResource(Res.drawable.map),
+                        "",
+                        modifier = Modifier.size(24.dp),
+                    )
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Text("Карта")
+                }
+            }
         }
 
 
