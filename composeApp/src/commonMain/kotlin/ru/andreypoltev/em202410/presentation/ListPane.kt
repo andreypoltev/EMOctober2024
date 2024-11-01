@@ -103,8 +103,9 @@ fun ListPane(
 
 
                     Text(
-                        text="Ещё ${(apiResponse.vacancies.size - 3).toString()} вакансии",
-                        modifier = Modifier.padding(vertical = 8.dp), style = MaterialTheme.typography.titleSmall
+                        text = "Ещё ${(apiResponse.vacancies.size - 3).toString()} вакансии",
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        style = MaterialTheme.typography.titleSmall
                     )
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Blue),
@@ -156,9 +157,15 @@ fun ListPane(
 
                     if (suitablePositions) {
                         item {
-                            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
 
-                                Text("${apiResponse.vacancies.size.toString()} вакансий")
+                                Text(
+                                    text = "${apiResponse.vacancies.size.toString()} вакансий",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
                                 Spacer(modifier = Modifier.weight(1f))
                                 Text(
                                     "По соответствию",
@@ -378,7 +385,9 @@ fun OfferCard(offer: Offer) {
             )
 
             if (offer.button.text.isNotEmpty()) {
-                Text(offer.button.text)
+                Text(
+                    text = offer.button.text, fontSize = 14.sp, lineHeight = 14.sp, color = Green
+                )
             }
 
 
